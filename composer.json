@@ -1,0 +1,33 @@
+{
+    "name": "googledrive/googledrive2.x",
+    "description": "The PHP elFinder Mount GoogleDrive",
+    "license": "GPL-3.0+",
+    "keywords": [
+        "GoogleDrive"
+    ],
+    "authors": [
+        {
+            "role": "Contributors",
+            "name": "Googledrive Contributing Team",
+            "homepage": "https://github.com/rajasharma27/GoogleDrive2.x/graphs/contributors"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/rajasharma27/GoogleDrive2.x"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "require": {
+        "php": ">=5.6",
+        "ext-curl": "*",
+        "ext-gd" : "*",
+        "ext-mcrypt": "*",
+        "ext-openssl" : "*",
+        "ext-pdo" : "*",
+        "ext-sockets" : "*",
+        "ext-sqlite3" : "*"
+    }
+}
