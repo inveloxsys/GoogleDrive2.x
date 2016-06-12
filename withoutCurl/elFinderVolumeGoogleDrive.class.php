@@ -292,7 +292,7 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
                     }
 					
 				natcasesort($folders);
-				$folders = ['root' => 'root'] + $folders;               
+				$folders = ['root' => 'My Drive'] + $folders;               
 				$folders = json_encode($folders);				
 				$options['pass'] = 'return';
 					
