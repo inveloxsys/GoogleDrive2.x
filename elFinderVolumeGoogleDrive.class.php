@@ -631,6 +631,7 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 	 * @return array googledrive metadata
 	 */
 	private function getDBdat($path) {
+	
 		if($path == '/'){		
 			$root = ['mimeType'=>self::DIRMIME];
 			return $root;
@@ -706,7 +707,8 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 	 * @return void
 	 * @author Dmitry Levashov
 	 **/
-	protected function cacheDir($path) {	
+	protected function cacheDir($path) {
+	
 		if($path !== '/'){		
 			$path = $this->chkDBdat($path)['path'];
 		}						
@@ -1464,7 +1466,7 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 			//Insert or Update a file
 			$files = new Google_Service_Drive_DriveFile();
 			
-			if(!empty($res) && empty($name) && empty($stat)){
+			if(!empty($res)){
 			// First retrieve the file from the API.
 			$itemId = basename($path);			  			
 			$name = $res['name']; 
@@ -1480,7 +1482,7 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 				  'uploadType' => 'multipart'
 				  ));
 				  				  
-			}elseif(empty($res) && !empty($name) && !empty($stat)) {
+			}elseif(empty($res)) {
 			
 			$name == '' ? $name = basename($path) : $name = $name;
 			$files->setName($name);
@@ -1489,7 +1491,8 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 			$files->setMimeType($mimeType);
 						
 			//Set the Folder Parent			
-			basename(dirname($path)) == '' ? $parentId = 'root' : $parentId = basename(dirname($path));			
+			basename(dirname($path)) == '' ? $parentId = 'root' : $parentId = basename(dirname($path));	
+				
 			$files->setParents(array($parentId));
 			
 			$data= stream_get_contents($fp);
