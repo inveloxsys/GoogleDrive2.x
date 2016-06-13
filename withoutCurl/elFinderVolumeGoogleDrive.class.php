@@ -584,10 +584,9 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 					
 			$opts = [				
 				'fields'	=> 'files(id,name)',
-				'orderBy'	=> 'folder,name',				
 				'pageSize'	=> 1000,
 				'spaces'	=> 'drive',
-				'q'			=> sprintf('trashed=false and "%s" in parents', basename($itemId))			
+				'q'		=> sprintf('trashed=false and "%s" in parents', basename($itemId))			
 			];					
 		
 		//$file = $this->oauth->files->listFiles($opts);
@@ -618,8 +617,8 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 			return $this->root;
 		}else{
 		
-		  	//basename(dirname($path)) == '' ? $itemId = 'root' : $itemId = basename(dirname($this->getHasPath($path)));			
-			basename(dirname($path)) == '' ? $itemId = 'root' : $itemId = basename(dirname($path));
+		  	basename(dirname($path)) == '' ? $itemId = 'root' : $itemId = basename(dirname($this->getHasPath($path)));			
+			//basename(dirname($path)) == '' ? $itemId = 'root' : $itemId = basename(dirname($path));
 									
 			$opts = [
 				'fields'	=> 'files(id,name,mimeType)',				
