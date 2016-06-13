@@ -235,6 +235,7 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 							$cdata .= '&' . $k . '=' . rawurlencode($v);
 						}
 					}
+					
 					if (strpos($options['url'], 'http') !== 0 ) {
 						$options['url'] = $this->getConnectorUrl();
 					}
@@ -572,19 +573,18 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 	 * 
 	 * @return realpath|string error message
 	 */
-	private function getRealpath($path) {					
+	private function getHasPath($path) {
+			
 		$temppath = explode('/',$path);
 				
-		if($path == '/'){
-			return '/';
-		}
 		//$files = new Google_Service_Drive_DriveFile();
 		$this->root == '/' ? $itemId = 'root' : $itemId = $this->root;		
 		
 		foreach($temppath as $tpath) {	
 					
 			$opts = [				
-				'fields'	=> 'files(id,name)',				
+				'fields'	=> 'files(id,name)',
+				'orderBy'	=> 'folder,name',				
 				'pageSize'	=> 1000,
 				'spaces'	=> 'drive',
 				'q'			=> sprintf('trashed=false and "%s" in parents', basename($itemId))			
@@ -599,7 +599,8 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 			}	
 		}
 		}
-		//$this->root == '/' ? $itemId = substr($itemId,4,strlen($itemId)-4) : $itemId;	
+		substr($itemId,0,4) == 'root' ? $itemId = substr($itemId,4,strlen($itemId)-4) : $itemId;
+		
 	  return $this->_normpath($itemId);	
 	} 
 	
@@ -611,12 +612,15 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 	 */
 	 
 	private function chkDBdat($path){		
-		$files = new Google_Service_Drive_DriveFile();
+		//$files = new Google_Service_Drive_DriveFile();
 		
 		if($path == $this->root){
 			return $this->root;
 		}else{
-		  	basename(dirname($path)) == '' ? $itemId = 'root' : $itemId = basename(dirname($path));
+		
+		  	//basename(dirname($path)) == '' ? $itemId = 'root' : $itemId = basename(dirname($this->getHasPath($path)));			
+			basename(dirname($path)) == '' ? $itemId = 'root' : $itemId = basename(dirname($path));
+									
 			$opts = [
 				'fields'	=> 'files(id,name,mimeType)',				
 				'pageSize'	=> 1000,
@@ -651,6 +655,7 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 			$root = ['mimeType'=>self::DIRMIME];
 			return $root;
 		}
+
 		
 		$itemId = $this->chkDBdat($path)['id'];		
 		
@@ -724,9 +729,9 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 	 **/
 	protected function cacheDir($path) {
 	
-		$path == '/' ? $itemId= 'root' : ($path == $this->root ? $itemId = basename($this->root) : 
-										  $itemId = $this->chkDBdat($path)['id']);						
-				
+		$path == '/' ? $itemId= 'root' : ($path == $this->root ? $itemId = basename($this->root) :  
+ 										  $itemId = $this->chkDBdat($path)['id']);						
+		
         $opts = [                  
         	'fields' => self::FETCHFIELDS_LIST,			
 			'pageSize' => 1000,
@@ -736,8 +741,8 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 				
 		$this->dirsCache[$path] = array();
 		$res = $this->query($opts);
-		$path == '/' || $path =='root' ? $mountPath = '/' : $mountPath = $path.'/';
-			
+		$path == '/' || $path =='root' ? $mountPath = '/' : $mountPath = $this->_normpath($path.'/');
+		
 		if ($res) {		
 			foreach($res as $raw) {								
 				if ($stat = $this->parseRaw($raw)) {				
@@ -1170,7 +1175,7 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 	 * @author Dmitry (dio) Levashov
 	 **/
 	protected function _stat($path) {
-			
+		
 		if ($this->isMyReload()) {
 			$this->refreshGoogleDriveToken();
 		}
