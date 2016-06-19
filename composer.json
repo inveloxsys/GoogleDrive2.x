@@ -1,0 +1,22 @@
+{
+    "name":        "rajasharma27/GoogleDrive2.x",
+    "description": "Mounting Google drive with elFinder",
+    "license":     "BSD-3-Clause",
+    "homepage":    "http://www.onlinewebplace.com/controlpanel/filemanager/index.html",
+    "authors": [
+        {
+            "name":     "Raja Sharma",
+            "homepage": "http://www.onlinewebplace.com/controlpanel/filemanager/index.html",
+            "email":    "rajasharma27@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.2"
+    },
+    "suggest": {
+        "GoogleDrive/googledrive-php": "elFinder Volume driver `GoogleDrive` require `GoogleDrive/googledrive-php`."        
+    },
+    "autoload": {
+        "classmap": ["php"]
+    }
+}
