@@ -1,5 +1,5 @@
 {
-    "name":        "googledrive/googledrive2.x",
+    "name":        "onlinewebplace/googledrive",
     "description": "Mounting Google drive with elFinder",
     "license":     "BSD-3-Clause",
     "homepage":    "http://www.onlinewebplace.com/controlpanel/filemanager/index.html",
@@ -14,7 +14,7 @@
         "php": ">=5.2"
     },
     "suggest": {
-        "composer require googledrive/googledrive2.x": "elFinder Volume driver `GoogleDrive` require `composer require googledrive/googledrive2.x`."        
+        "composer require onlinewebplace/googledrive": "elFinder Volume driver `GoogleDrive` require `composer require onlinewebplace/googledrive`."        
     },
     "autoload": {
         "classmap": ["php"]
