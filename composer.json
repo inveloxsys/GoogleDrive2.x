@@ -1,22 +1,45 @@
 {
-    "name":        "onlinewebplace/googledrive",
-    "description": "Mounting Google drive with elFinder",
-    "license":     "BSD-3-Clause",
-    "homepage":    "http://www.onlinewebplace.com/controlpanel/filemanager/index.html",
+    "name": "onlinewebplace/googledrive",
+    "description": "Mounting Google drive with elFinder.",
+    "keywords": [
+        "onlinewebplace", "googledrive", "files"
+    ],
+    "license": "MIT",
     "authors": [
         {
-            "name":     "Raja Sharma",
-            "homepage": "http://www.onlinewebplace.com/controlpanel/filemanager/index.html",
-            "email":    "rajasharma27@gmail.com"
+            "name": "Raja Sharma",
+            "email": "rajasharma27@gmail.com"
         }
     ],
     "require": {
-        "onlinewebplace/googledrive": "^2.0"
+        "php": ">=5.4.0"
     },
-    "suggest": {
-        "composer require onlinewebplace/googledrive": "elFinder Volume driver `GoogleDrive` require `composer require onlinewebplace/googledrive`."        
+    "require-dev": {
+        "onlinewebplace/googledrive": "*"        
     },
     "autoload": {
-        "classmap": ["php"]
+        "psr-4": {
+            "onlinewebplace\\googledrive\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "onlinewebplace\\googledrive\\": "googledrive/"
+        }
+    },
+    "suggest": {
+        "ext-fileinfo": "Required for MimeType",
+        "onlinewebplace/googledrive": "Allows you to use GoogleDrive with elFinder"        
+    },
+    "conflict": {
+        "onlinewebplace/googledrive": "<2.0"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
     }
 }
