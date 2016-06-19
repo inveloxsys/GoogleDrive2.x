@@ -10,7 +10,12 @@
  * * Create Credentials ->oAuth Client ->web Applicaton
  * */ 
  // Required for Google Drive Netmount
-
+ // Installation by composer
+ // `composer require googledrive/googledrive2.x`
+ // Enable network mount
+ // with autoload
+ elFinder::$netDrivers['googledrive'] = 'GoogleDrive';
+ // without autoload
  include_once dirname(__FILE__).DIRECTORY_SEPARATOR.'elFinderVolumeGoogleDrive.class.php';
 
  // GoogleDrive Netmount driver need next two settings. You can get at https://console.developers.google.com
