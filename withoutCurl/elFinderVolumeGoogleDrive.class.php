@@ -55,13 +55,6 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
     const FETCHFIELDS_GET = 'id,name,mimeType,modifiedTime,parents,size,imageMediaMetadata(height,width),webContentLink,thumbnailLink';
     
     /**
-     * Last API error message
-     *
-     * @var string
-     **/
-    protected $apiError = '';
-
-    /**
      * Directory for tmp files
      * If not set driver will try to use tmbDir as tmpDir
      *
@@ -75,14 +68,12 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
      * @var string
      **/
     public $netMountKey = '';
-        
-    /**
-     * Gdrive download host, replaces 'drive.google.com' of shares URL
-     * 
+    
+	/**
+     * Thumbnail prefix
+     *
      * @var string
-     */
-    private $googledrive_dlhost = 'drive.google.com';
-        
+     **/       
     private $tmbPrefix = '';
     
     
