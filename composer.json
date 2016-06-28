@@ -1,45 +1,5 @@
 {
-    "name": "onlinewebplace/googledrive",
-    "description": "Mounting Google drive with elFinder.",
-    "keywords": [
-        "onlinewebplace", "googledrive", "files"
-    ],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Raja Sharma",
-            "email": "rajasharma27@gmail.com"
-        }
-    ],
     "require": {
-        "php": ">=5.4.0"
-    },
-    "require-dev": {
-        "onlinewebplace/googledrive": "*"        
-    },
-    "autoload": {
-        "psr-4": {
-            "onlinewebplace\\googledrive\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "onlinewebplace\\googledrive\\": "googledrive/"
-        }
-    },
-    "suggest": {
-        "ext-fileinfo": "Required for MimeType",
-        "onlinewebplace/googledrive": "Allows you to use GoogleDrive with elFinder"        
-    },
-    "conflict": {
-        "onlinewebplace/googledrive": "<2.0"
-    },
-    "config": {
-        "bin-dir": "bin"
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "2.0-dev"
-        }
+        "onlinewebplace/googledrive": "^1.1"
     }
 }
