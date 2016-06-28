@@ -1,5 +1,5 @@
 {
     "require": {
-        "onlinewebplace/googledrive": "^2.0"
+        "onlinewebplace/googledrive"
     }
 }
