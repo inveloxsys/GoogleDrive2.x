@@ -1,9 +1,4 @@
 {
-    "require": {
-        "onlinewebplace/GoogleDrive2.x"
-    }
-}
-{
     "name": "onlinewebplace/GoogleDrive",
     "description": "Mount Google Drive with elFinder!",
     "version": "2.0",
