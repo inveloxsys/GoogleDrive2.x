@@ -1,5 +1,5 @@
 {
     "require": {
-        "onlinewebplace/googledrive"
+        "onlinewebplace/GoogleDrive2.x"
     }
 }
