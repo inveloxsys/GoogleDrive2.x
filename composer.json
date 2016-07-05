@@ -24,13 +24,5 @@
         "type": "GoogleDrive",
         "url": "https://github.com/rajasharma27/GoogleDrive2.x"
     }
-    ],
-    "require": {
-        "onlinewebplace/googledrive ": "dev-master"
-    },
-    "autoload": {
-        "psr-0": {
-            "Yiinitializr": "common/lib/"
-        }
-    }
+    ]
 }
