@@ -3,3 +3,26 @@
         "onlinewebplace/GoogleDrive2.x"
     }
 }
+{
+    "name": "onlinewebplace/GoogleDrive",
+    "description": "Mount Google Drive with elFinder!",
+    "version": "2.0",
+    "type": "library",
+    "keywords": ["googledrive", "elfinder"],
+    "homepage": "http://onlinewebplace.com",
+    "time": "2016-07-05",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Raja Sharma",
+            "email": "support@onlinewebplace.com",
+            "homepage": "http://www.onlinewebplace.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "support@onlinewebplace.com",
+    },
+    "require": {
+        "onlinewebplace/GoogleDrive": "@dev"
+    }
