@@ -1,19 +1,18 @@
 {
-    "name": "odsf/aes",
-    "description": "*** system engine.",
-    "keywords": ["election"],
-    "homepage": "***/",
-    "type": "yii-application",
+    "name": "onlinewebplace/googledrive",
+    "description": "Mounting Google Drive with elFinder",
+    "keywords": ["elFinder"],
+    "homepage": "http://www.onlinewebplace.com",
+    "type": "WebApplication",
     "license": "BSD-3-Clause",
-    "description": "This is the engine for running *** online",
     "minimum-stability": "stable",
     "config": {
         "vendor-dir": "common/lib/vendor"
     },
     "authors": [
         {
-            "name": "Vasiliy Pedak",
-            "email": "***@gmail.com"
+            "name": "Raja Sharma",
+            "email": "support@onlinewebplace.com"
         }
     ],
     "repositories": [
