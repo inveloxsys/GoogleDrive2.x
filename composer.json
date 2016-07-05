@@ -21,8 +21,8 @@
             "url": "http://packages.phundament.com"
         },
     {
-        "type": "vcs",
-        "url": "https://github.com/vasiliy-pdk/YiiBooster.git"
+        "type": "GoogleDrive",
+        "url": "https://github.com/rajasharma27/GoogleDrive2.x"
     }
     ],
     "require": {
