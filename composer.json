@@ -1,24 +1,38 @@
 {
-    "name": "onlinewebplace/GoogleDrive",
-    "description": "Mount Google Drive with elFinder!",
-    "version": "2.0",
-    "type": "library",
-    "keywords": ["googledrive", "elfinder"],
-    "homepage": "http://onlinewebplace.com",
-    "time": "2016-07-05",
-    "license": "MIT",
+    "name": "odsf/aes",
+    "description": "*** system engine.",
+    "keywords": ["election"],
+    "homepage": "***/",
+    "type": "yii-application",
+    "license": "BSD-3-Clause",
+    "description": "This is the engine for running *** online",
+    "minimum-stability": "stable",
+    "config": {
+        "vendor-dir": "common/lib/vendor"
+    },
     "authors": [
         {
-            "name": "Raja Sharma",
-            "email": "support@onlinewebplace.com",
-            "homepage": "http://www.onlinewebplace.com",
-            "role": "Developer"
+            "name": "Vasiliy Pedak",
+            "email": "***@gmail.com"
         }
     ],
-    "support": {
-        "email": "support@onlinewebplace.com",
-    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://packages.phundament.com"
+        },
+    {
+        "type": "vcs",
+        "url": "https://github.com/vasiliy-pdk/YiiBooster.git"
+    }
+    ],
     "require": {
-        "onlinewebplace/GoogleDrive": "@dev"
+        "yiisoft/yii":"1.1.13",
+    "vasiliy-pdk/YiiBooster": "dev-master"
+    },
+    "autoload": {
+        "psr-0": {
+            "Yiinitializr": "common/lib/"
+        }
     }
 }
