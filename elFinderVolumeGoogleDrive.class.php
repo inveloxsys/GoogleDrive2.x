@@ -27,13 +27,6 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
     protected $service = null;
     
     /**
-     * GoogleDrive object
-     *
-     * @var googledrive
-     **/
-    protected $googledrive = null;
-    
-    /**
      * MIME tyoe of directory
      *
      * @var string
@@ -514,7 +507,11 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
         //$files = new Google_Service_Drive_DriveFile();
 
         if ($path == $this->root) {
-            return $this->root;
+            $this->root == '/' ? $itemId = 'root' : $itemId = basename($this->root);
+			$opts = [
+				'fields' => self::FETCHFIELDS_GET
+			];            
+			return $this->service->files->get($itemId, $opts);
         } else {
             empty(basename(dirname($path))) ? $HasPath ='/' : $HasPath = trim($this->getHasPath($path));
             basename(dirname($path)) == '' ? $itemId = 'root' : $itemId = basename(dirname($HasPath));
@@ -551,8 +548,11 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
     private function getDBdat($path)
     {
         if ($path == $this->root) {
-            $root = ['mimeType'=>self::DIRMIME];
-            return $root;
+            $this->root == '/' ? $itemId = 'root' : $itemId = basename($this->root);
+			$opts = [
+				'fields' => self::FETCHFIELDS_GET
+			];            
+			return $this->service->files->get($itemId, $opts);
         }
         
         $itemId = basename($this->chkDBdat($path)['path']);
@@ -602,7 +602,17 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
         $stat['size']        = $raw['mimeType'] == self::DIRMIME ? 0 : (int)$raw['size'];
         $stat['ts']            = isset($raw['modifiedTime']) ? strtotime($raw['modifiedTime']) : $_SERVER['REQUEST_TIME'];
         $stat['dirs']        = $raw['mimeType'] == self::DIRMIME ? 1 : 0;
-        $stat['url'] = '1';
+        
+        if($permissions = $raw->getPermissions()){		
+			foreach ($permissions as $permission) {
+				if ($permission->type === 'anyone' && $permission->role === 'reader') {					
+					$stat['url'] = str_replace('export=download', 'export=media', $raw->getWebContentLink());				
+					break;
+				}else{
+					$stat['url'] = '1';
+				}
+			}
+		}
 	
         if ($raw['mimeType'] !== self::DIRMIME) {
             isset($raw->getImageMediaMetadata()['width']) ? $stat['width'] = $raw->getImageMediaMetadata()['width'] : $stat['width'] = 0;
@@ -662,58 +672,54 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
     **/
     protected function doSearch($path, $q, $mimes)
     {
-        $result = array();
-        $path == '/' || $path =='root' ? $itemId= 'root' :    $itemId= basename($path);
-                
-        $mimeType = parent::$mimetypes[strtolower($q)];
-    
-        if (substr($q, 0, 1)== '*' || $mimeType !== null) {
-            $mimeType == '' ? $mimeType= parent::$mimetypes[pathinfo(strtolower($q), PATHINFO_EXTENSION)] : $mimeType = $mimeType;
-            $path == '/' ? $q = sprintf('trashed=false and mimeType = "%s"', $mimeType) : $q = sprintf('trashed=false and "%s" in parents and mimeType = "%s"', $itemId, $mimeType);
-            
-            $opts = [
-                'fields' => self::FETCHFIELDS_LIST,
-                'pageSize' => 1000,
-                'spaces' => 'drive',
-                'q' => $q
-                ];
-        } else {
-            $path == '/' ? $q = sprintf('trashed=false and name = "%s"', strtolower($q)) : $q = sprintf('trashed=false and "%s" in parents and name = "%s"', $itemId, strtolower($q));
-            $opts = [
-                'fields' => self::FETCHFIELDS_LIST,
-                'pageSize' => 1000,
-                'spaces' => 'drive',
-                'q' => $q
-                ];
-        }
-        
-        $res = $this->query($opts);
-                    
-        $timeout = $this->options['searchTimeout']? $this->searchStart + $this->options['searchTimeout'] : 0;
-        $path == '/' || $path =='root' ? $mountPath = '/' : $mountPath = $path.'/';
-        
-        if ($res) {
-            foreach ($res as $raw) {
-                if ($timeout && $timeout < time()) {
-                    $this->setError(elFinder::ERROR_SEARCH_TIMEOUT, $this->path($this->encode($path)));
-                    break;
-                }
-                                
-                if ($stat = $this->parseRaw($raw)) {
-                    if (!isset($this->cache[$mountPath.$raw->id])) {
-                        $stat = $this->updateCache($mountPath.$raw->id, $stat);
-                    }
-                    if (!empty($stat['hidden']) || ($mimes && $stat['mime'] === 'directory') || !$this->mimeAccepted($stat['mime'], $mimes)) {
-                        continue;
-                    }
-                    $stat = $this->stat($mountPath.$raw->id);
-                    $stat['path'] = $this->path($stat['hash']);
-                    $result[] = $stat;
-                }
-            }
-        }
-        
-        return $result;
+        $path == '/' || $path =='root' ? $itemId= 'root' : $itemId= basename($path); 		   
+    	empty($mimes) ? $mimeType = parent::$mimetypes[strtolower($q)] :
+			$mimeType = parent::$mimetypes[strtolower(explode("/",$mimes[0])[1])];
+		
+		$path = $this->_normpath($path.'/');		
+		$result = [];
+					
+		$opts = [
+			'fields' => self::FETCHFIELDS_LIST,
+			'pageSize' => 1000,
+			'spaces' => 'drive',
+			'q' => sprintf('trashed=false and "%s" in parents', $itemId)
+		];
+		
+		$res = $this->query($opts); 
+
+		foreach ($res as $raw) {
+			if ($raw->getMimeType() == self::DIRMIME)  {
+				$result = array_merge($result, $this->doSearch($path.$raw->id, $q, $mimes));									
+			}
+			else
+			{				   
+				$timeout = $this->options['searchTimeout']? $this->searchStart + $this->options['searchTimeout'] : 0;
+			
+				if ($timeout && $timeout < time()) {
+					$this->setError(elFinder::ERROR_SEARCH_TIMEOUT, $this->path($this->encode($path)));
+					break;
+				}
+				if ((!empty($mimeType) && $raw->mimeType !== $mimeType) || (empty($mimeType) && strcasecmp($raw->name,$q))){ 
+					continue;
+				}						
+				if ($stat = $this->parseRaw($raw)) {
+					if (!isset($this->cache[$path.$raw->id])) {
+						$stat = $this->updateCache($path.$raw->id, $stat);
+					}
+					if (!empty($stat['hidden']) || ($mimes && $stat['mime'] === 'directory') || !$this->mimeAccepted($stat['mime'], $mimes)) {
+						continue;
+					}
+
+				$stat = $this->stat($path.$raw->id);
+				$stat['path'] = $this->path($stat['hash']);
+				$result[] = $stat;
+				}
+				
+			}
+		}
+		
+		return $result;
     }
     
     /**
@@ -869,7 +875,7 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
      **/
     protected function tmbname($stat)
     {
-        return $this->tmbPrefix.$stat['rev'].'.png';
+        return $this->tmbPrefix.$stat['rev'].$stat['ts'].'.png';
     }
     
     /**
