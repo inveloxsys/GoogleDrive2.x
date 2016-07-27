@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "studio-42/elfinder": "~2.1.14"
+        "studio-42/elfinder": "~2.0"
     },
     "autoload": {
         "psr-4": {
