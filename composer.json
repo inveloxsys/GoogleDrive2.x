@@ -11,6 +11,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
+        "onlinewebplace/googledrive": "2.0.*",
         "studio-42/elfinder": "~2.0"
     },
     "autoload": {
