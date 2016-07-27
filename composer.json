@@ -11,7 +11,8 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "studio-42/elfinder": "~2.0"
+        "studio-42/elfinder": "~2.0",
+        "php-pm/php-pm": "dev-master"
     },
     "autoload": {
         "psr-4": {
