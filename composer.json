@@ -1,28 +1,20 @@
 {
     "name": "onlinewebplace/googledrive",
-    "description": "Mounting Google Drive with elFinder",
-    "keywords": ["elFinder"],
-    "homepage": "http://www.onlinewebplace.com",
-    "type": "WebApplication",
-    "license": "BSD-3-Clause",
-    "minimum-stability": "stable",
-    "config": {
-        "vendor-dir": "common/lib/vendor"
-    },
+    "description": "GoogleDrive PHP Client",
+    "keywords" : ["googledrive", "client", "php"],
+    "license": "MIT",
     "authors": [
         {
             "name": "Raja Sharma",
             "email": "support@onlinewebplace.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "http://packages.phundament.com"
-        },
-    {
-        "type": "GoogleDrive",
-        "url": "https://github.com/rajasharma27/GoogleDrive2.x"
+    "require": {
+        "studio-42/elfinder": "~2.1.14"
+    },
+    "autoload": {
+        "psr-4": {
+            "OnlineWebPlace\\GoogleDrive\\": "src/GoogleDrive"
+        }
     }
-    ]
 }
