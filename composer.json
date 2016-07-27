@@ -10,8 +10,6 @@
         }
     ],
     "minimum-stability": "stable",
-    minimum-stability: dev,
-    prefer-stable: true,
     "require": {
         "studio-42/elfinder": "~2.0"
     },
