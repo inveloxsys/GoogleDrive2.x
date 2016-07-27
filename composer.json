@@ -11,8 +11,7 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "onlinewebplace/googledrive": "dev-master",
-        "studio-42/elfinder": "~2.0"
+        "onlinewebplace/googledrive": "dev-master"
     },
     "autoload": {
         "psr-4": {
