@@ -9,6 +9,7 @@
             "email": "support@onlinewebplace.com"
         }
     ],
+    "minimum-stability": "stable",
     "require": {
         "studio-42/elfinder": "~2.0"
     },
