@@ -10,7 +10,8 @@
         }
     ],
     "require": {
-        "php": ">=5.2"
+        "php": ">=5.2",
+        "elfinder" : ">=2.x"
     },
     "autoload": {
         "classmap": ["php"]
