@@ -8,11 +8,5 @@
             "name": "Raja Sharma",
             "email": "support@onlinewebplace.com"
         }
-    ],
-    "require": {
-        "php": ">=5.2"
-    },
-    "autoload": {
-        "classmap": ["php"]
-    }
+    ]
 }
