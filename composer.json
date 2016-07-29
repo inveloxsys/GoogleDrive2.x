@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "OnlineWebPlace\\GoogleDrive\\": "src/GoogleDrive"
+            "OnlineWebPlace\\GoogleDrive2.x\\": "src/GoogleDrive"
         }
     }
 }
