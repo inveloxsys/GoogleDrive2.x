@@ -48,6 +48,13 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
     const FETCHFIELDS_GET = 'id,name,mimeType,modifiedTime,parents,permissions,size,imageMediaMetadata(height,width),webContentLink,webViewLink';
     
     /**
+	 * hasCache by folders
+	 *
+	 * @var array
+	 **/
+	protected $HasdirsCache = array();
+	
+    /**
      * Directory for tmp files
      * If not set driver will try to use tmbDir as tmpDir
      *
@@ -446,100 +453,6 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
     }
     
     /**
-     * Get child directory real path with mount
-     * 
-     * @return realpath|string error message
-     */
-    private function getHasPath($path)
-    {
-        $temppath = explode('/', $path);
-        array_shift($temppath);
-		
-		if($this->root !== '/'){
-			array_shift($temppath);
-		}
-                
-        //$files = new Google_Service_Drive_DriveFile();
-        $this->root == '/' ? $itemId = 'root' : $itemId = $this->root;
-        
-        foreach ($temppath as $tpath) {
-            $opts = [
-                'fields'    => 'files(id,name)',
-                //'orderBy'	=> 'folder,name',								
-                'pageSize'  => 1000,
-                'spaces'    => 'drive',
-                'q'         => sprintf('trashed=false and "%s" in parents', basename($itemId))
-            ];
-        
-        //$file = $this->service->files->listFiles($opts);
-        $file = $this->query($opts);
-            $i=1;
-            if ($file) {
-                foreach ($file as $raw) {
-                    if ($raw->name == $tpath || $raw->id ==$tpath) {
-                        $itemId = $itemId.'/'.$raw->id;
-                        break;
-                    } elseif ($i == sizeof($file)) {
-                        $itemId = $itemId.'/'.$tpath;
-                        break;
-                    }
-                    $i++;
-                }
-            } else {
-                $itemId = $itemId.'/'.$tpath;
-            }
-        }
-        
-        substr($itemId, 0, 4) == 'root' ? $path = $this->_normpath(substr($itemId, 4, strlen($itemId)-4)) : $path = $itemId;
-       
-        return $path;
-    }
-    
-    /**
-     * Get dat(googledrive metadata) from GoogleDrive
-     * 
-     * @param string $path with id
-     * @return array googledrive metadata
-     */
-     
-    private function chkDBdat($path)
-    {
-        //$files = new Google_Service_Drive_DriveFile();
-
-        if ($path == $this->root) {
-            $this->root == '/' ? $itemId = 'root' : $itemId = basename($this->root);
-			$opts = [
-				'fields' => self::FETCHFIELDS_GET
-			];            
-			return $this->service->files->get($itemId, $opts);
-        } else {
-            empty(basename(dirname($path))) ? $HasPath ='/' : $HasPath = trim($this->getHasPath($path));
-            basename(dirname($path)) == '' ? $itemId = 'root' : $itemId = basename(dirname($HasPath));
-                
-            $opts = [
-                'fields'    => 'files(id,name,mimeType)',
-                'pageSize'    => 1000,
-                'spaces'    => 'drive',
-                'q'        => sprintf('trashed=false and "%s" in parents', $itemId)
-            ];
-        
-            //$file = $this->service->files->listFiles($opts);
-            $file = $this->query($opts);
-            
-            foreach ($file as $raw) {
-                if ($raw->name == basename($path) || $raw->id == basename($path)) {
-                    basename(dirname($path)) == '' ? $path = '/'.$raw->id : $path = dirname($HasPath).'/'.$raw->id;
-                    $res = array('path'=>$path, 'id'=>$raw->id, 'name'=>$raw->name, 'mimeType'=>$raw->mimeType);
-                    return $res;
-                    break;
-                }
-            }
-        
-            return false;
-        }
-    }
-         
-    /**
      * Get dat(googledrive metadata) from GoogleDrive
      * 
      * @param string $path
@@ -555,18 +468,17 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
 			return $this->service->files->get($itemId, $opts);
         }
         
-        $itemId = basename($this->chkDBdat($path)['path']);
-        
-        if (!empty($itemId)) {
-            $opts = [
-                    'fields' => self::FETCHFIELDS_GET
-                ];
-            //$files = new Google_Service_Drive_DriveFile();									
-            $res = $this->service->files->get($itemId, $opts);
-            return $res;
-        } else {
-            return array();
-        }
+        empty($this->HasdirsCache[$path]) ? $HasPath = $path : $HasPath = $this->HasdirsCache[$path][0];
+        $itemId = basename($HasPath);
+
+		try{
+			$opts = [
+				'fields' => self::FETCHFIELDS_GET
+				];
+			return $this->service->files->get($itemId, $opts);
+		} catch (Exception $e) {
+			return array();
+		}
     }
     
 
@@ -632,9 +544,8 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
      **/
     protected function cacheDir($path)
     {
-        $path == '/' ? $HasPath= 'root' : ($path == $this->root ? $HasPath = basename($this->root) :
-                                           $HasPath = $this->chkDBdat($path)['path']);
-            
+        $path == '/' ? $HasPath= 'root' : (empty($this->HasdirsCache[$path]) ? $HasPath = $path : $HasPath = $this->HasdirsCache[$path][0]);
+        
         $opts = [
             'fields' => self::FETCHFIELDS_LIST,
             'pageSize' => 1000,
@@ -653,6 +564,7 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
                     $stat = $this->updateCache($mountPath.$raw->id, $stat);
                     if (empty($stat['hidden']) && $path !== $mountPath.$raw->id) {
                         $this->dirsCache[$path][] = $mountPath.$raw->id;
+                        $this->HasdirsCache[$this->_normpath($path.'/'.$raw->name)][] = $mountPath.$raw->id;
                     }
                 }
             }
@@ -736,8 +648,11 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
     protected function copy($src, $dst, $name)
     {
         $this->clearcache();
-        
-        if ($this->chkDBdat($src)['mimeType'] == self::DIRMIME) {
+        $opts = [
+				'fields' => self::FETCHFIELDS_GET
+				];       
+		$res = $this->service->files->get(basename($src), $opts);
+        if ($res['mimeType'] == self::DIRMIME) {
             $itemId = basename($this->_mkdir($dst, $name));
             $path = $this->_joinPath($dst, $itemId);
             $opts = [
@@ -1435,17 +1350,16 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
             $path .= '/'.$name;
         }
         $path = $this->_normpath($path);
-        $res = $this->chkDBdat($path);
         
         try {
             //Insert or Update a file
             $files = new Google_Service_Drive_DriveFile();
             
-            if (!empty($res)) {
+            if (!empty($stat['rev'])) {
                 // First retrieve the file from the API.
-                $itemId = $res['id'];
-                $name = $res['name'];
-                $mimeType = $res['mimeType'];
+                $itemId = $stat['rev'];
+                $name = $stat['name'];
+                $mimeType = $stat['mimeType'];
                 $files->setName($name);
                 $files->setDescription('');
                 $files->setMimeType($mimeType);
@@ -1456,9 +1370,8 @@ class elFinderVolumeGoogleDrive extends elFinderVolumeDriver {
                       'mimeType' => $mimeType,
                       'uploadType' => 'multipart'
                       ));
-            } elseif (empty($res)) {
+            } elseif (empty($stat['rev'])) {
                 $name == '' ? $name = basename($path) : $name = $name;
-                array_merge($uploadname, $name);
                 $files->setName($name);
                 $files->setDescription('');
                 $stat['mime'] == '' ? $mimeType= parent::$mimetypes[pathinfo(basename($path), PATHINFO_EXTENSION)] : $mimeType= $stat['mime'];
