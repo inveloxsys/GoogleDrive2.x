@@ -10,3 +10,26 @@
         }
     ]
 }
+{
+    "name": "onlinewebplace/googledrive",
+    "description": "A PHP client library for Google Drive",
+	"type": "library",
+	"keywords": ["googledrive", "elfinder", "client", "php"],
+	"homepage": "https://github.com/rajasharma27/GoogleDrive2.x",
+	"license": "GPL",
+	"authors": [
+		{
+			"name": "Raja Sharma",
+			"email": "support@onlinewebplace.com",
+			"homepage": "http://onlinewebplace.com",
+			"role": "Developer"
+		}
+	],
+    "require": {
+        "php": ">=5.6.0"
+    },
+	"autoload": {
+			  "classmap": ["src/googledrive/"]
+		
+		}  
+}
