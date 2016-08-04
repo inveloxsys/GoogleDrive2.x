@@ -1,17 +1,5 @@
 {
     "name": "onlinewebplace/googledrive",
-    "description": "GoogleDrive PHP Client",
-    "keywords" : ["googledrive", "elfinder", "client", "php"],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Raja Sharma",
-            "email": "support@onlinewebplace.com"
-        }
-    ]
-}
-{
-    "name": "onlinewebplace/googledrive",
     "description": "A PHP client library for Google Drive",
 	"type": "library",
 	"keywords": ["googledrive", "elfinder", "client", "php"],
